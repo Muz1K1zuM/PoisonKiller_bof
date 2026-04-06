@@ -141,6 +141,8 @@ PoisonKiller-BOF/
 - **Kill IOCTL**: `0x22E010`
 - **Mechanism**: `ZwOpenProcess` + `ZwTerminateProcess` from kernel — bypasses PPL
 
+> This tool has not been tested against CrowdStrike Falcon in a live environment. However, the kernel-level termination mechanism bypasses PPL regardless of the EDR vendor. Any process protected solely by PPL should be terminable. Always test in a lab before using in an engagement.
+
 ### Driver Loading (OPSEC)
 
 - Uses `NtLoadDriver` directly — **bypasses the SCM entirely**
