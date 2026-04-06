@@ -20,7 +20,7 @@ shell tasklist | findstr /i "CSFalconService"
 pk-kill <PID>
 
 # 5. Unload the driver
-pk-unload <name> "C:\Temp\PoisonX.sys"
+pk-unload <name>
 
 # 6. Delete the .sys from disk
 pk-delete "C:\Temp\PoisonX.sys"
