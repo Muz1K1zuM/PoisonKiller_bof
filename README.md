@@ -29,9 +29,7 @@ pk-delete "C:\Temp\PoisonX.sys"
 pk-clear-state
 ```
 
-> **Important**: Always use quotes around paths to avoid issues with backslashes in Havoc.
-
-> **Important**: Always use a clean, dedicated sacrificial beacon for driver operations. Do not use your main C2 beacon. See the [Known Issues](#known-issues--bugs) section for details.
+> **Important**: Always use a clean, dedicated sacrificial beacon for driver operations. Do not use your main C2 beacon. 
 
 ---
 
@@ -163,10 +161,9 @@ If the Havoc session is lost, state is automatically restored from `.pk_state` w
 If the session is lost without `.pk_state`:
 
 ```bash
-# Find the loaded driver on the target
-shell driverquery | findstr /v "Microsoft\|Windows\|Intel\|AMD"
+
 # Force unload by name
-pk-unload <name> "C:\Temp\PoisonX.sys"
+pk-unload <name>
 ```
 
 ---
@@ -190,29 +187,10 @@ pk-unload <name> "C:\Temp\PoisonX.sys"
 
 ## Known Issues / Bugs
 
-- **Beacon instability after intensive use** — after several kill operations in the same session the beacon may become unstable and crash on subsequent operations. The exact cause is unclear — possibly accumulated process state corruption or internal driver callbacks marking the process that used the IOCTL. **Workaround**: always use a clean, dedicated sacrificial beacon exclusively for driver operations. Never use your main C2 beacon for these operations. If the sacrificial beacon dies, simply spawn a new one.
-
-- **Intermittent unload failure** — in some sessions `NtUnloadDriver` fails with `0xC0000034`. Workaround: reboot the target to clear kernel state.
+- **Beacon instability after intensive use** — loading/unloading drivers and killing processes in the same beacon session causes accumulated state corruption. The beacon may crash unexpectedly during subsequent operations. **Always use a fresh, dedicated sacrificial beacon exclusively for PoisonKiller operations.** Never use your main persistence beacon. If the sacrificial beacon dies, spawn a new one and continue. I did not manage to solve this.
 
 ---
 
-## Future Research
-
-### 1. Second IOCTL in PoisonX.sys
-
-The original research identifies **2 IOCTLs** but only reverses the process kill one (`0x22E010`). The first IOCTL was not analyzed and may expose a kernel memory R/W primitive.
-
-### 2. Kernel Callback Removal BOF
-
-Removing callbacks registered via `PsSetCreateProcessNotifyRoutine` before killing processes would enable more reliable EDR termination. This requires a driver with a kernel memory R/W primitive.
-
-### 3. PDB Path Removal
-
-The PDB path `D:\Build\PoisonX\Hide\x64\Release\Hide.pdb` is detectable via string analysis. Zeroing it without breaking the Authenticode signature is still an open problem — `strip` breaks the PE checksum.
-
-### 4. bof_dropper — In-Memory Staging
-
-A dropper BOF that receives the driver as bytes from the C2 would eliminate the manual upload step and enable full in-memory staging.
 
 ---
 
