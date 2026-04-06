@@ -28,6 +28,10 @@ pk-delete "C:\Temp\PoisonX.sys"
 # 7. Clear state
 pk-clear-state
 ```
+<img width="622" height="364" alt="image" src="https://github.com/user-attachments/assets/b407fd5f-deae-4073-b124-fdbd51a6bf1a" />
+<img width="476" height="647" alt="image" src="https://github.com/user-attachments/assets/bc2b6fa6-7b56-453c-be44-3b981c6ac126" />
+
+
 
 > **Important**: Always use a clean, dedicated sacrificial beacon for driver operations. Do not use your main C2 beacon. 
 
