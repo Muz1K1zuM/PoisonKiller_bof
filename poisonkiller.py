@@ -5,9 +5,9 @@ import random
 import string
 
 # ── CONFIGURATION ─────────────────────────────────────────────
-# Set BASE_DIR to the project root before loading the script
-# Example: /home/user/tools/PoisonKiller
-BASE_DIR = "/path/to/PoisonKiller_bof"
+# Set this to the absolute path of the cloned repository
+# Example: BASE_DIR = "/home/user/tools/PoisonKiller"
+BASE_DIR = "/path/to/PoisonKiller"
 
 # ── Packer ───────────────────────────────────────────────────
 
@@ -190,24 +190,18 @@ def cmd_unload(demonID, *args):
     # If no arguments, try to use stored state
     if len(args) < 1:
         drv_name = state.get("drv_name")
-        sys_path  = state.get("sys_path")
         if not drv_name:
-            drv_name, sys_path = load_state()
+            drv_name, _ = load_state()
         if not drv_name:
             demon.ConsoleWrite(demon.CONSOLE_ERROR,
-                "[!] No driver loaded. Use pk-load first.\n")
+                "[!] No driver loaded. Use pk-load first or provide driver name.\n")
             return None
-    elif len(args) < 2:
-        demon.ConsoleWrite(demon.CONSOLE_ERROR,
-            "[!] Usage: pk-unload <driver_name> \"<sys_path>\"\n")
-        return None
     else:
         drv_name = args[0].strip()
-        sys_path  = args[1].strip()
 
     packer = Packer()
     packer.addWStr(drv_name)
-    packer.addWStr(sys_path if sys_path else "")
+    packer.addWStr("")  # sys_path not needed for unload
 
     TaskID = demon.ConsoleWrite(demon.CONSOLE_TASK,
         f"[*] Unloading driver '{drv_name}'")
